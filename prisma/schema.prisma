@@ -1,0 +1,124 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// 1. Tabela: produtos_quimicos
+model ProdutoQuimico {
+  id                   String   @id @default(uuid())
+  nome                 String
+  classeRisco          String   @map("classe_risco")
+  status               Boolean  @default(true)
+  pesoUnidade          Decimal? @map("peso_unidade") @db.Decimal(10, 2)
+  descricao            String?
+  numeroOnu            String?  @map("numero_onu")
+  grupoCompatibilidade String?  @map("grupo_compatibilidade")
+  dataCriacao          DateTime @default(now()) @map("data_criacao")
+  dataAtualizacao      DateTime @updatedAt @map("data_atualizacao")
+
+  cargas               CargaQuimica[]
+
+  @@map("produtos_quimicos")
+}
+
+// 2. Tabela: responsaveis_tecnicos
+model ResponsavelTecnico {
+  id                   String   @id @default(uuid())
+  nome                 String
+  registroProfissional String   @map("registro_profissional")
+  cpf                  String
+  dataCriacao          DateTime @default(now()) @map("data_criacao")
+  dataAtualizacao      DateTime @updatedAt @map("data_atualizacao")
+
+  cargas               CargaQuimica[]
+
+  @@map("responsaveis_tecnicos")
+}
+
+// 3. Tabela: remetentes
+model Remetente {
+  id              String   @id @default(uuid())
+  razaoSocial     String   @map("razao_social")
+  cnpj            String
+  telefone        String
+  dataCriacao     DateTime @default(now()) @map("data_criacao")
+  dataAtualizacao DateTime @updatedAt @map("data_atualizacao")
+
+  cargas          CargaQuimica[]
+
+  @@map("remetentes")
+}
+
+// 4. Tabela: cargas_quimicas (Tabela central do ecossistema portuário)
+model CargaQuimica {
+  id                      String    @id @default(uuid())
+  codigoCarga             String    @map("codigo_carga")
+  idProduto               String    @map("id_produto")
+  quantidade              Decimal   @db.Decimal(10, 2)
+  unidadeMedida           String    @map("unidade_medida")
+  origem                  String
+  destino                 String
+  responsavelTecnico      String    @map("responsavel_tecnico")
+  documentacaoObrigatoria Boolean   @default(false) @map("documentacao_obrigatoria")
+  statusAtual             String    @default("Registrada") @map("status_atual")
+  dataEntrada             DateTime  @default(now()) @map("data_entrada")
+  dataSaida               DateTime? @map("data_saida")
+  dataCriacao             DateTime  @default(now()) @map("data_criacao")
+  dataAtualizacao         DateTime  @updatedAt @map("data_atualizacao")
+
+  idRemetente             String?   @map("id_remetente")
+  idResponsavelTecnico    String?   @map("id_responsavel_tecnico")
+
+  // Relacionamentos N:1
+  produto                 ProdutoQuimico      @relation(fields: [idProduto], references: [id])
+  remetente               Remetente?          @relation(fields: [idRemetente], references: [id])
+  responsavelTecnicoRel   ResponsavelTecnico? @relation(fields: [idResponsavelTecnico], references: [id])
+
+  // Relacionamentos 1:N
+  documentos              DocumentoCarga[]
+  inspecoes               Inspecao[]
+
+  @@index([idProduto])
+  @@index([idRemetente])
+  @@index([idResponsavelTecnico])
+  @@map("cargas_quimicas")
+}
+
+// 5. Tabela: documentos_carga
+model DocumentoCarga {
+  id              String   @id @default(uuid())
+  idCarga         String   @map("id_carga")
+  tipoDocumento   String   @map("tipo_documento")
+  dataValidade    DateTime @map("data_validade")
+  statusValido    Boolean  @default(false) @map("status_valido")
+  dataCriacao     DateTime @default(now()) @map("data_criacao")
+  dataAtualizacao DateTime @updatedAt @map("data_atualizacao")
+
+  carga           CargaQuimica @relation(fields: [idCarga], references: [id], onDelete: Cascade)
+
+  @@index([idCarga])
+  @@map("documentos_carga")
+}
+
+// 6. Tabela: inspecoes
+model Inspecao {
+  id              String   @id @default(uuid())
+  idCarga         String   @map("id_carga")
+  parecerTecnico  String?  @map("parecer_tecnico")
+  statusInspecao  String   @map("status_inspecao")
+  resultado       Boolean  @default(false)
+  dataCriacao     DateTime @default(now()) @map("data_criacao")
+  dataAtualizacao DateTime @updatedAt @map("data_atualizacao")
+
+  carga           CargaQuimica @relation(fields: [idCarga], references: [id], onDelete: Cascade)
+
+  @@index([idCarga])
+  @@map("inspecoes")
+}
