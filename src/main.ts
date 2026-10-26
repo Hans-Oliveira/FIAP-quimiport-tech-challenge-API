@@ -1,11 +1,13 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module.js';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { DomainExceptionFilter } from './presentation/filters/domain-exception.filter.js';
+import { MetricsService } from './observability/metrics.service.js';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const metrics = app.get(MetricsService);
 
   // Tratamento de exceções de domínio/regras de negócio
   app.useGlobalFilters(new DomainExceptionFilter());
@@ -15,6 +17,18 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       transform: true,
+      exceptionFactory: (errors) => {
+        metrics.recordValidationError(errors.length);
+        const messages = errors.flatMap((error) =>
+          Object.values(error.constraints ?? {}),
+        );
+
+        return new BadRequestException({
+          statusCode: 400,
+          error: 'Validation failed',
+          message: messages,
+        });
+      },
     }),
   );
 
@@ -32,4 +46,4 @@ async function bootstrap() {
   await app.listen(process.env.PORT ?? 3000);
 }
 
-bootstrap();
+void bootstrap();

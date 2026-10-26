@@ -1,5 +1,25 @@
 # FIAP QuimiPort - Tech Challenge (Fase 1)
 
+## Observabilidade
+
+A API expõe métricas compatíveis com Prometheus em `GET /metrics`. As métricas
+incluem total e duração das requisições HTTP, erros internos (respostas 5xx) e
+falhas de validação. Os logs de requisições e erros são enviados para o
+stdout, ficando disponíveis nos logs do container Docker.
+
+Para iniciar a API, o MySQL e o Prometheus:
+
+```powershell
+docker compose up --build
+```
+
+Após a inicialização:
+
+- API: `http://localhost:3000`
+- Swagger: `http://localhost:3000/docs`
+- Métricas: `http://localhost:3000/metrics`
+- Prometheus: `http://localhost:9090`
+
   
 
 ## 1. Entendimento do Domínio

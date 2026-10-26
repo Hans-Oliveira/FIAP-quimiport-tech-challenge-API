@@ -41,8 +41,24 @@ services:
     networks:
       - quimiport-network
 
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    container_name: quimiport-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    depends_on:
+      - api
+    networks:
+      - quimiport-network
+
 volumes:
   mysql_data:
+    driver: local
+  prometheus_data:
     driver: local
 
 networks:
