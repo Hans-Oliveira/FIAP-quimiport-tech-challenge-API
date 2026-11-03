@@ -3,12 +3,6 @@
 
 ---
 
-## Integrantes do Grupo
-* **Hans Oliveira** - RM: *(informe seu RM)*
-* *(Adicione os demais integrantes do grupo aqui, se houver)*
-
----
-
 ## 1. Entendimento do Domínio e Contexto do Problema
 
 **Contexto de Problema:** O Porto de Santos é um dos principais pontos de movimentação do Brasil, lidando com produtos químicos que exigem controle cuidadoso, acompanhamento técnico, documentação adequada e classificação de risco. Atualmente, o registro em empresas de controle é feito de forma manual ou descentralizada. Isso dificulta a consulta das informações, o rastreio do status da carga e a validação de regras de segurança essenciais.
