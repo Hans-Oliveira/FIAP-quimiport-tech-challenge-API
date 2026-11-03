@@ -4,14 +4,11 @@ on:
   push:
     branches:
       - main
-      - master
       - dev
       - develop
-      - Hans-Oliveira
   pull_request:
     branches:
       - main
-      - master
       - dev
       - develop
 
