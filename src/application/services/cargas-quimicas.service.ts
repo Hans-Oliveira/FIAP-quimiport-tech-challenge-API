@@ -88,7 +88,7 @@ export class CargasQuimicasService {
     // Sincroniza a validação
     if (this.documentoRepository) {
       const documentos = await this.documentoRepository.buscarPorCargaId(id);
-      if (documentos.length > 0 && documentos.some((d) => d.statusValido)) {
+      if (documentos.some((d) => d.statusValido)) {
         carga.apresentarDocumentacao();
       }
     }

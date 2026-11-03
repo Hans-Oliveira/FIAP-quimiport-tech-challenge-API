@@ -159,7 +159,7 @@ export class CargaQuimica {
     this.transitarPara(StatusCarga.LIBERADA);
   }
 
-  public bloquearCarga(motivo?: string): void {
+  public bloquearCarga(_motivo?: string): void {
     if (this._statusAtual === StatusCarga.FINALIZADA || this._statusAtual === StatusCarga.CANCELADA) {
       throw new BusinessRuleError(`Não é possível bloquear uma carga que já está ${this._statusAtual}.`);
     }
