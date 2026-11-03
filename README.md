@@ -243,23 +243,3 @@ npm run test:e2e
    ```
 4. Acesse o Swagger UI em `http://localhost:3000/docs`.
 
----
-
-## 12. Roteiro Sugerido para o Vídeo Demonstrativo (5 a 10 minutos)
-
-2. **Estrutura Arquitetural e Tecnologias (1 min):**
-   * Mostrar a divisão de pastas (DDD / Onion Architecture: Domain, Application, Infrastructure, Presentation) e o schema Prisma.
-3. **Execução com Docker Compose (1 min):**
-   * Demonstrar o `docker compose up --build` ou o container rodando no Docker Desktop.
-4. **Demonstração Prática no Swagger (2 a 3 min):**
-   * Abrir `http://localhost:3000/docs` no navegador.
-   * Criar um produto químico via `POST /produtos-quimicos`.
-   * Mostrar validação de erro ao tentar cadastrar produto sem nome ou classe de risco.
-   * Registrar uma carga via `POST /cargas-quimicas` (status inicial `Registrada`).
-   * Tentar liberar sem documento (mostrar erro 400 de regra de negócio).
-   * Apresentar documentação (`PATCH /cargas-quimicas/:id/documentacao`) e avançar status para `Liberada` e `Em movimentação`.
-   * Demonstrar bloqueio e impossibilidade de movimentar carga bloqueada.
-5. **Execução dos Testes Automatizados (1 min):**
-   * Rodar no terminal `npm test` mostrando os 72 testes passando.
-6. **Pipeline de CI com GitHub Actions e Encerramento (1 min):**
-   * Mostrar a aba *Actions* no GitHub com a pipeline verde.
