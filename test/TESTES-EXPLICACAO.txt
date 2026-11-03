@@ -1,0 +1,24 @@
+RESUMO DOS TESTES AUTOMATIZADOS
+
+domain-business-flows.spec.ts
+Valida cadastro de produtos e cargas, campos obrigatorios, produto inativo,
+quantidade invalida, documentacao para liberacao, atualizacao e cancelamento
+de carga. Tambem cobre transicoes de status permitidas e proibidas, incluindo
+o bloqueio de movimentacao de carga bloqueada. Usa repositorios simulados,
+sem acessar banco de dados.
+
+deployment-security.spec.ts
+Confere se a API fica restrita a localhost, se a porta do banco nao e
+publicada e se as credenciais do Compose nao usam senhas padrao.
+
+app.controller.spec.ts
+Testa diretamente se o controller raiz retorna "Hello World!".
+
+app.e2e-spec.ts
+Envia uma requisicao HTTP GET para "/" e verifica resposta 200 e corpo
+"Hello World!". Usa Prisma simulado, sem precisar conectar ao MySQL.
+
+EXECUCAO
+- npm test       Executa os testes unitarios.
+- npm run test:e2e  Executa o teste HTTP E2E.
+- npm run test:cov  Executa os testes com cobertura.

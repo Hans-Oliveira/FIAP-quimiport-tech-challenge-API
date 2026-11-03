@@ -1,0 +1,48 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: quimiport-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Defina MYSQL_ROOT_PASSWORD no .env}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-quimiport}
+      MYSQL_USER: ${MYSQL_USER:-quimiport_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Defina MYSQL_PASSWORD no .env}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u quimiport_user || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    networks:
+      - quimiport-network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: quimiport-api
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      PORT: 3000
+      NODE_ENV: production
+      DATABASE_URL: ${DATABASE_URL:?Defina DATABASE_URL no .env}
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "npx prisma db push --skip-generate && npm run start:prod"
+    networks:
+      - quimiport-network
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  quimiport-network:
+    driver: bridge
