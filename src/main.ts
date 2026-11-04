@@ -3,9 +3,13 @@ import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module.js';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { DomainExceptionFilter } from './presentation/filters/domain-exception.filter.js';
+import { LoggingInterceptor } from './presentation/interceptors/logging.interceptor.js';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Interceptor global de logs para observabilidade HTTP
+  app.useGlobalInterceptors(new LoggingInterceptor());
 
   // Tratamento de exceções de domínio/regras de negócio
   app.useGlobalFilters(new DomainExceptionFilter());
@@ -20,10 +24,9 @@ async function bootstrap() {
 
   // Configuração básica do Swagger
   const config = new DocumentBuilder()
-    .setTitle('Tech Challenge 2 - API')
-    .setDescription('Documentação dos endpoints da API')
-    .setVersion('1.0')
-    // .addBearerAuth() // descomente se for usar autenticação JWT mais adiante
+    .setTitle('QuimiPort API - Tech Challenge Fase 2')
+    .setDescription('Documentação dos endpoints da API QuimiPort (Porto de Santos)')
+    .setVersion('2.0')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
@@ -32,4 +35,4 @@ async function bootstrap() {
   await app.listen(process.env.PORT ?? 3000);
 }
 
-bootstrap();
+void bootstrap();

@@ -9,7 +9,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
     try {
       await this.$connect();
       this.logger.log('Conexão com o banco de dados estabelecida via Prisma.');
-    } catch (error) {
+    } catch {
       this.logger.warn(
         'Não foi possível conectar ao banco de dados no momento. Verifique se o MySQL está rodando.',
       );

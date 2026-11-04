@@ -32,6 +32,8 @@ jobs:
 
       - name: Generate Prisma Client
         run: npx prisma generate
+        env:
+          DATABASE_URL: "mysql://root:root@localhost:3306/quimiport_db"
 
       - name: Lint and Code Quality
         run: npm run lint
