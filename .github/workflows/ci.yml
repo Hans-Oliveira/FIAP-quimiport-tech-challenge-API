@@ -17,6 +17,20 @@ jobs:
     name: Build, Lint & Test
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: quimiport_db
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -32,6 +46,8 @@ jobs:
 
       - name: Generate Prisma Client
         run: npx prisma generate
+        env:
+          DATABASE_URL: "mysql://root:root@127.0.0.1:3306/quimiport_db"
 
       - name: Lint and Code Quality
         run: npm run lint
@@ -39,5 +55,13 @@ jobs:
       - name: Build Application
         run: npm run build
 
+      - name: Push Prisma Schema to Database
+        run: npx prisma db push
+        env:
+          DATABASE_URL: "mysql://root:root@127.0.0.1:3306/quimiport_db"
+
       - name: Run Tests
         run: npm test
+        env:
+          NODE_ENV: test
+          DATABASE_URL: "mysql://root:root@127.0.0.1:3306/quimiport_db"

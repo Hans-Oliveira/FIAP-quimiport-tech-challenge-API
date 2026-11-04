@@ -4,12 +4,10 @@ services:
     container_name: quimiport-db
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-quimiport}
       MYSQL_USER: ${MYSQL_USER:-quimiport_user}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-quimiport_pass}
-    ports:
-      - "3306:3306"
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?}
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
@@ -28,11 +26,11 @@ services:
     container_name: quimiport-api
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     environment:
       PORT: 3000
       NODE_ENV: production
-      DATABASE_URL: mysql://${MYSQL_USER:-quimiport_user}:${MYSQL_PASSWORD:-quimiport_pass}@db:3306/${MYSQL_DATABASE:-quimiport}
+      DATABASE_URL: mysql://${MYSQL_USER:-quimiport_user}:${MYSQL_PASSWORD:?}@db:3306/${MYSQL_DATABASE:-quimiport}
     depends_on:
       db:
         condition: service_healthy
