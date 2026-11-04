@@ -7,7 +7,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-quimiport}
       MYSQL_USER: ${MYSQL_USER:-quimiport_user}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-quimiport_pass}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?}
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
@@ -30,7 +30,7 @@ services:
     environment:
       PORT: 3000
       NODE_ENV: production
-      DATABASE_URL: mysql://${MYSQL_USER:-quimiport_user}:${MYSQL_PASSWORD:-quimiport_pass}@db:3306/${MYSQL_DATABASE:-quimiport}
+      DATABASE_URL: mysql://${MYSQL_USER:-quimiport_user}:${MYSQL_PASSWORD:?}@db:3306/${MYSQL_DATABASE:-quimiport}
     depends_on:
       db:
         condition: service_healthy
